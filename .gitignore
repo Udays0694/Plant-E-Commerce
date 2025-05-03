@@ -1,0 +1,13 @@
+# Node dependencies
+plant_ecommerce_backend/node_modules/
+plant_ecommerce_frontend/node_modules/
+
+# React production build folder (in case you build later)
+plant_ecommerce_frontend/build/
+
+# Environment variables
+*.env
+
+# System files
+.DS_Store
+

@@ -5,7 +5,7 @@ dotenv.config();
 // Create a connection pool to MySQL database using Railway's env variables
 const pool = mysql.createPool({
     host: process.env.MYSQLHOST,
-    port: process.env.MYSQLPORT || 3306,
+    port: process.env.MYSQLPORT,
     user: process.env.MYSQLUSER,
     password: process.env.MYSQLPASSWORD,
     database: process.env.MYSQLDATABASE,

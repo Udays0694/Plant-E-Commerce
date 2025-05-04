@@ -5,7 +5,6 @@ import {
   Typography,
   Grid,
   Box,
-  Paper,
   Button,
 } from '@mui/material';
 import ProductCard from '../components/ProductCard';

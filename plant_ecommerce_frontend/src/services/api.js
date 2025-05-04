@@ -1,18 +1,23 @@
 import axios from 'axios';
 
+// Determine baseURL based on environment
+const baseURL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://plant-e-commerce-production.up.railway.app' // Production backend
+    : 'http://localhost:5000'; // Local development backend
+
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000', // Your backend server URL
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add axios interceptor to handle token expiration globally
+// Add Axios interceptor to handle token expiration globally
 axiosInstance.interceptors.response.use(
   response => response,
   async (error) => {
-    if (error.response.status === 401) {
-      // Handle token expiration (log out user and redirect to login)
+    if (error.response?.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login'; // Redirect to login page
     }
@@ -20,7 +25,7 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-// Fetch products from the backend by category
+// Fetch products by category
 export const fetchProductsByCategory = async (categoryId) => {
   const response = await axiosInstance.get(`/products/category/${categoryId}`);
   return response.data;
@@ -29,7 +34,7 @@ export const fetchProductsByCategory = async (categoryId) => {
 // Register a new user
 export const registerUser = async (userData) => {
   try {
-    const response = await axiosInstance.post('/auth/register', userData); // ✅ Fixed Endpoint
+    const response = await axiosInstance.post('/auth/register', userData);
     return response.data;
   } catch (error) {
     console.error('Error registering user:', error);
@@ -37,18 +42,17 @@ export const registerUser = async (userData) => {
   }
 };
 
-// Login user and return token (from backend route)
+// Login user and store token
 export const loginUser = async (loginData) => {
   try {
-    const response = await axiosInstance.post('/auth/login', loginData); // Correct backend login route
+    const response = await axiosInstance.post('/auth/login', loginData);
+    const token = response.data.token;
 
-    // Store the token in localStorage if login is successful
-    const token = response.data.token; // Assuming the token is returned as part of the response data
     if (token) {
-      localStorage.setItem('token', token); // Store token in localStorage
+      localStorage.setItem('token', token);
     }
 
-    return response.data; // You can return any additional data, like user info if included
+    return response.data;
   } catch (error) {
     console.error('Error logging in:', error);
     throw new Error(error.response?.data?.message || 'Login failed, please try again.');
@@ -57,15 +61,13 @@ export const loginUser = async (loginData) => {
 
 // Logout user
 export const logoutUser = () => {
-  localStorage.removeItem('token'); // Ensure it matches the key used in `loginUser`
+  localStorage.removeItem('token');
 };
 
-// Get User Profile
+// Get user profile
 export const getUserProfile = async () => {
   const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('User is not logged in.');
-  }
+  if (!token) throw new Error('User is not logged in.');
 
   try {
     const response = await axiosInstance.get('/users/profile', {
@@ -75,7 +77,7 @@ export const getUserProfile = async () => {
     });
     return response.data;
   } catch (error) {
-    if (error.response && error.response.status === 401) {
+    if (error.response?.status === 401) {
       throw new Error('Session expired. Please log in again.');
     }
     console.error('Error fetching user profile:', error);
@@ -83,7 +85,7 @@ export const getUserProfile = async () => {
   }
 };
 
-// Update User Profile (PUT /users/profile)
+// Update user profile
 export const updateUserProfile = async (token, updatedProfile) => {
   try {
     const response = await axiosInstance.put('/users/profile', updatedProfile, {
@@ -109,7 +111,7 @@ export const placeOrder = async (userId, cartItems, totalAmount) => {
       productId: item.id,
       quantity: item.quantity,
     })),
-    totalAmount, // Ensure the field name is consistent
+    totalAmount,
   };
 
   try {

@@ -21,7 +21,7 @@ const LoginPage = () => {
     setSuccessMessage(''); // Reset success message
 
     try {
-      const response = await loginUser(formData); // Assuming loginUser handles the response
+      //const response = await loginUser(formData); // Assuming loginUser handles the response
 
       setSuccessMessage('Login successful! Redirecting...'); // Show success message
 

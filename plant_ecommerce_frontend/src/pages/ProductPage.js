@@ -36,7 +36,7 @@ const ProductPage = ({ onAddToCart }) => {
       <Grid container spacing={4}>
         <Grid item xs={12} md={6}>
           <img
-            src={`http://localhost:5000/${product.image_path}`}
+            src={`http://plant-e-commerce-production.up.railway.app/${product.image_path}`}
             alt={product.general_name}
             style={{ width: '100%', borderRadius: '10px' }}
           />
